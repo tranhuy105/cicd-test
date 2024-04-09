@@ -16,9 +16,13 @@ jobs:
           POSTGRES_DB: test
           POSTGRES_USER: huy
           POSTGRES_PASSWORD: huy
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
         ports:
           - 5432:5432
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
     steps:
       - name: Checkout code
@@ -31,24 +35,7 @@ jobs:
           java-version: 17
           cache: maven
 
-      - name: Configure application properties
-        run: |
-          echo "spring.datasource.url=jdbc:postgresql://localhost:5432/test" >> src/main/resources/application.properties
-          echo "spring.datasource.username=huy" >> src/main/resources/application.properties
-          echo "spring.datasource.password=huy" >> src/main/resources/application.properties
-
-      - name: Set up PostgreSQL database
-        run: |
-          # Wait for PostgreSQL to start
-          until nc -z localhost 5432; do
-            echo "Waiting for PostgreSQL to start..."
-            sleep 1
-          done
-          # Initialize database schema and data (replace with your initialization script)
-          export PGPASSWORD=huy
-          psql -h 127.0.0.1 -U huy -d test -f src/main/resources/schema.sql
-          
-      - name: Run tests
-        run: mvn test
+      - name: Build and test with Maven
+        run: mvn --batch-mode package
 
 
