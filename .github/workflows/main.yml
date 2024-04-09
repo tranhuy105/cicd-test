@@ -31,6 +31,12 @@ jobs:
           java-version: 17
           cache: maven
 
+      - name: Configure application properties
+        run: |
+          echo "spring.datasource.url=jdbc:postgresql://localhost:5432/test" >> src/main/resources/application.properties
+          echo "spring.datasource.username=huy" >> src/main/resources/application.properties
+          echo "spring.datasource.password=huy" >> src/main/resources/application.properties
+
       - name: Set up PostgreSQL database
         run: |
           # Wait for PostgreSQL to start
@@ -41,13 +47,11 @@ jobs:
           # Initialize database schema and data (replace with your initialization script)
           psql -h localhost -U huy -d test -f src/main/resources/schema.sql
           
-      - name: Configure application properties
-        run: |
-          echo "spring.datasource.url=jdbc:postgresql://localhost:5432/test" >> src/main/resources/application.properties
-          echo "spring.datasource.username=huy" >> src/main/resources/application.properties
-          echo "spring.datasource.password=huy" >> src/main/resources/application.properties
-          
       - name: Run tests
         run: mvn test
+
+      - name: Cleanup PostgreSQL database service
+        run: docker stop postgres && docker rm postgres
+        if: always()  # Ensure this step runs even if previous steps fail
 
 
