@@ -14,12 +14,16 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/test
       SPRING_DATASOURCE_USERNAME: huy
       SPRING_DATASOURCE_PASSWORD: huy
+    restart: always
 
   postgres:
     image: postgres:latest
+    restart: always
     environment:
       POSTGRES_DB: test
       POSTGRES_USER: huy
       POSTGRES_PASSWORD: huy
     ports:
       - "5432:5432"
+    volumes:
+      - ./data:/var/lib/postgresql/data
