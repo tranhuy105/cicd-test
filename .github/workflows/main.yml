@@ -45,13 +45,10 @@ jobs:
             sleep 1
           done
           # Initialize database schema and data (replace with your initialization script)
-          psql -h localhost -U huy -d test -f src/main/resources/schema.sql
+          export PGPASSWORD=huy
+          psql -h 127.0.0.1 -U huy -d test -f src/main/resources/schema.sql
           
       - name: Run tests
         run: mvn test
-
-      - name: Cleanup PostgreSQL database service
-        run: docker stop postgres && docker rm postgres
-        if: always()  # Ensure this step runs even if previous steps fail
 
 
