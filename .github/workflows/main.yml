@@ -9,6 +9,20 @@ jobs:
   build-deploy:
     name: Build and deploy app
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_DB: test
+          POSTGRES_USER: huy
+          POSTGRES_PASSWORD: huy
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
 
     steps:
       - name: Checkout code

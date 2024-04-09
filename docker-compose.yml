@@ -5,6 +5,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      image: tranhuy105/tranhuy105:latest
     ports:
       - "8080:8080"
     depends_on:
